@@ -13,8 +13,7 @@ const simpleLightBox = new SimpleLightbox('.gallery a');
 
 let searchQuery = '';
 let page;
-let totalHits = 0;
-loadBtn.disabled = false;
+loadBtn.classList.add('is-hidden');
 
 form.addEventListener('submit', handleSubmit); 
 loadBtn.addEventListener('click', loadMoreImgs)
@@ -36,21 +35,21 @@ async function handleSubmit (evt) {
     createCardMarkup(data);
     simpleLightBox.refresh();
   }
+  loadBtn.classList.remove('is-hidden');
  };
 
 async function loadMoreImgs () {
   page+=1;
+  loadBtn.classList.add('is-hidden');
   const response = await getRequestedImgs( searchQuery, page);
   const data = response.hits;
   createCardMarkup(data);
   simpleLightBox.refresh();
-  if (data.length < totalHits) {
-    loadBtn.disabled = true;
-  } else {
-    loadBtn.disabled = true;
+  if (Math.ceil(response.totalHits/40) === page) {
     Notify.info("We're sorry, but you've reached the end of search results.");
-  }
-  
+  } else {
+    loadBtn.classList.remove('is-hidden');    
+  }  
 }
 
 
